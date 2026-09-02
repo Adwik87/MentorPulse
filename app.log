@@ -1,0 +1,23 @@
+
+> mentorpulse@1.0.0 start
+> npm run build && PORT=3000 node server/index.js
+
+
+> mentorpulse@1.0.0 build
+> vite build
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.js:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+vite v8.2.2 building client environment for production...
+transforming...
+✓ 1831 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.48 kB │ gzip:  0.32 kB
+dist/assets/index-BPXmmlgC.css   27.95 kB │ gzip:  5.91 kB
+dist/assets/index-DzebaeYi.js   262.67 kB │ gzip: 73.59 kB
+
+✓ built in 771ms
+MentorPulse is running on http://localhost:3000
+Terminated
