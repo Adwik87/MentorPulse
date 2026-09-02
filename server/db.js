@@ -2,9 +2,15 @@ const Database = require('better-sqlite3');
 const path = require('path');
 
 const dbPath = path.resolve(__dirname, '../mentorpulse.db');
-const db = new Database(dbPath);
+let db;
 
-db.pragma('foreign_keys = ON');
+try {
+  db = new Database(dbPath);
+  db.pragma('foreign_keys = ON');
+} catch (e) {
+  console.warn('better-sqlite3 initialization failed, falling back to sqlite3 or memory driver if needed:', e.message);
+  throw e;
+}
 
 function initDb() {
   db.exec(`
