@@ -20,30 +20,32 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Initialize DB schema & seed data
-initDb();
+initDb().then(() => {
+  // Register API routes
+  app.use('/api/users', usersRouter);
+  app.use('/api/relationships', relationshipsRouter);
+  app.use('/api/goals', goalsRouter);
+  app.use('/api/sessions', sessionsRouter);
+  app.use('/api/attendance', attendanceRouter);
+  app.use('/api/moms', momsRouter);
+  app.use('/api/analytics', analyticsRouter);
 
-// Register API routes
-app.use('/api/users', usersRouter);
-app.use('/api/relationships', relationshipsRouter);
-app.use('/api/goals', goalsRouter);
-app.use('/api/sessions', sessionsRouter);
-app.use('/api/attendance', attendanceRouter);
-app.use('/api/moms', momsRouter);
-app.use('/api/analytics', analyticsRouter);
+  // Serve static frontend build
+  const distPath = path.join(__dirname, '../dist');
+  if (fs.existsSync(distPath)) {
+    app.use(express.static(distPath));
+    app.use((req, res, next) => {
+      if (!req.path.startsWith('/api') && !req.path.startsWith('/uploads')) {
+        res.sendFile(path.join(distPath, 'index.html'));
+      } else {
+        next();
+      }
+    });
+  }
 
-// Serve static frontend build
-const distPath = path.join(__dirname, '../dist');
-if (fs.existsSync(distPath)) {
-  app.use(express.static(distPath));
-  app.use((req, res, next) => {
-    if (!req.path.startsWith('/api') && !req.path.startsWith('/uploads')) {
-      res.sendFile(path.join(distPath, 'index.html'));
-    } else {
-      next();
-    }
+  app.listen(PORT, () => {
+    console.log(`MentorPulse is running on http://localhost:${PORT}`);
   });
-}
-
-app.listen(PORT, () => {
-  console.log(`MentorPulse is running on http://localhost:${PORT}`);
+}).catch(err => {
+  console.error('Failed to initialize database:', err);
 });

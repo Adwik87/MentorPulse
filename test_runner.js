@@ -3,7 +3,6 @@ const path = require('path');
 const fs = require('fs');
 const http = require('http');
 
-// Helper to make API calls to local Express server
 function apiCall(path, method = 'GET', body = null) {
   return new Promise((resolve, reject) => {
     const options = {
@@ -37,10 +36,10 @@ function apiCall(path, method = 'GET', body = null) {
 async function runTests() {
   console.log('--- STARTING BACKEND INTEGRATION TESTS ---');
 
-  // Start server process
+  process.env.PORT = 3001;
   const { initDb } = require('./server/db');
-  initDb();
-  const app = require('./server/index');
+  await initDb();
+  require('./server/index');
 
   // Wait 1 second for server startup
   await new Promise(r => setTimeout(r, 1000));
