@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const { initDb } = require('./db');
 
 const usersRouter = require('./routes/users');
@@ -12,7 +13,7 @@ const momsRouter = require('./routes/moms');
 const analyticsRouter = require('./routes/analytics');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -30,14 +31,19 @@ app.use('/api/attendance', attendanceRouter);
 app.use('/api/moms', momsRouter);
 app.use('/api/analytics', analyticsRouter);
 
-// Serve static frontend files in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../dist')));
-  app.get('(.*)', (req, res) => {
-    res.sendFile(path.join(__dirname, '../dist/index.html'));
+// Serve static frontend build
+const distPath = path.join(__dirname, '../dist');
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+  app.use((req, res, next) => {
+    if (!req.path.startsWith('/api') && !req.path.startsWith('/uploads')) {
+      res.sendFile(path.join(distPath, 'index.html'));
+    } else {
+      next();
+    }
   });
 }
 
 app.listen(PORT, () => {
-  console.log(`MentorPulse Express Server running on port ${PORT}`);
+  console.log(`MentorPulse is running on http://localhost:${PORT}`);
 });

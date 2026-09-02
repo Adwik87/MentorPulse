@@ -4,7 +4,7 @@
   "description": "Institutional Mentoring Management Application",
   "main": "server/index.js",
   "scripts": {
-    "start": "node server/index.js",
+    "start": "npm run build && PORT=3000 node server/index.js",
     "dev": "vite",
     "build": "vite build",
     "test": "node test_runner.js"
